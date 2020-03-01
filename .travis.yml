@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t srsolano/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true srsolano/react-test npm test
+
+after_success:
+  - docker build -t srsolano/multi-client ./client
+  - docker build -t srsolano/multi-nginx ./nginx
+  - docker build -t srsolano/multi-api ./api
+  - docker build -t srsolano/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take all images and push them to docker hub
+  - docker push srsolano/multi-client
+  - docker push srsolano/multi-nginx
+  - docker push srsolano/multi-api
+  - docker push srsolano/multi-worker
