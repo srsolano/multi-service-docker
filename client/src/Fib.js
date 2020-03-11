@@ -19,7 +19,7 @@ const Fib = () => {
   useEffect(() => {
     fetchValues();
     fetchIndexes();
-  }, [fetchValues, fetchIndexes]);
+  }, []);
 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -30,6 +30,7 @@ const Fib = () => {
   };
 
   const renderSeenIndexes = () =>
+    Array.isArray(seenIndexes) &&
     seenIndexes.map(({ number }) => number).join(', ');
 
   const renderValues = () =>
